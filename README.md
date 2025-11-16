@@ -14,7 +14,6 @@
 - [Tech Stack](#tech-stack)
 - [Prasyarat](#prasyarat)
 - [Instalasi](#instalasi)
-- [Konfigurasi](#konfigurasi)
 - [Menjalankan Aplikasi](#menjalankan-aplikasi)
 - [API Documentation](#api-documentation)
 - [Scripts](#scripts)
@@ -312,6 +311,60 @@ Authorization: Bearer your_admin_access_token
 ## 🗄️ Database
 
 ### Schema
+
+Aplikasi ini menggunakan MySQL sebagai database dengan Drizzle ORM untuk mengelola schema.
+
+#### Table: `users`
+
+Menyimpan data user dan kredensial.
+
+| Column      | Type            | Constraints           | Description                    |
+| ----------- | --------------- | --------------------- | ------------------------------ |
+| `id`        | INT             | PRIMARY KEY, AUTO_INC | User ID                        |
+| `name`      | VARCHAR(100)    | NOT NULL              | Nama lengkap user              |
+| `email`     | VARCHAR(128)    | NOT NULL, UNIQUE      | Email user (untuk login)       |
+| `password`  | VARCHAR(255)    | NOT NULL              | Password ter-hash (bcrypt)     |
+| `role`      | ENUM            | DEFAULT 'user'        | Role: 'user' atau 'admin'      |
+| `created_at`| TIMESTAMP       | DEFAULT NOW()         | Waktu pembuatan akun           |
+
+#### Table: `events`
+
+Menyimpan informasi event yang dikelola oleh admin.
+
+| Column      | Type            | Constraints           | Description                    |
+| ----------- | --------------- | --------------------- | ------------------------------ |
+| `id`        | INT             | PRIMARY KEY, AUTO_INC | Event ID                       |
+| `title`     | VARCHAR(100)    | NOT NULL              | Judul event                    |
+| `desc`      | VARCHAR(255)    | NULLABLE              | Deskripsi event                |
+| `location`  | VARCHAR(255)    | NULLABLE              | Lokasi event                   |
+| `start_at`  | TIMESTAMP       | NOT NULL              | Waktu mulai event              |
+| `created_at`| TIMESTAMP       | DEFAULT NOW()         | Waktu pembuatan record         |
+
+#### Table: `refresh_tokens`
+
+Menyimpan refresh token untuk session management dan keamanan.
+
+| Column       | Type            | Constraints           | Description                    |
+| ------------ | --------------- | --------------------- | ------------------------------ |
+| `id`         | INT             | PRIMARY KEY, AUTO_INC | Token ID                       |
+| `user_id`    | INT             | NOT NULL              | Foreign key ke tabel users     |
+| `token`      | VARCHAR(512)    | NOT NULL              | Refresh token ter-hash         |
+| `jti`        | VARCHAR(128)    | NOT NULL              | JWT ID (unique identifier)     |
+| `device_info`| VARCHAR(255)    | NULLABLE              | Informasi device user          |
+| `ip_address` | VARCHAR(45)     | NULLABLE              | IP address user                |
+| `expires_at` | TIMESTAMP       | NOT NULL              | Waktu expired token            |
+| `created_at` | TIMESTAMP       | DEFAULT NOW()         | Waktu pembuatan token          |
+| `revoked_at` | TIMESTAMP       | NULLABLE              | Waktu revoke token (logout)    |
+
+#### Table: `__drizzle_migrations`
+
+Menyimpan history migration database (dikelola oleh Drizzle ORM).
+
+| Column      | Type            | Constraints           | Description                    |
+| ----------- | --------------- | --------------------- | ------------------------------ |
+| `id`        | BIGINT UNSIGNED | PRIMARY KEY, AUTO_INC | Migration ID                   |
+| `hash`      | TEXT            | NOT NULL              | Hash migration file            |
+| `created_at`| BIGINT          | NULLABLE              | Timestamp migration dijalankan |
 
 Aplikasi ini menggunakan Drizzle ORM untuk mengelola database schema. Schema utama meliputi:
 

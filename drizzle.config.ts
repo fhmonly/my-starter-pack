@@ -1,16 +1,13 @@
 import 'dotenv/config';
-import { defineConfig } from 'drizzle-kit';
+import { Config, defineConfig } from 'drizzle-kit';
 
-const DB_USERNAME = process.env.DB_USERNAME
+const DB_USERNAME = process.env.DB_USERNAME || 'root'
 const DB_PASSWORD = process.env.DB_PASSWORD
-const DB_HOST = process.env.DB_HOST
-const DB_PORT = +process.env.DB_PORT || 3306
-const DB_DATABASE = process.env.DB_DATABASE
+const DB_HOST = process.env.DB_HOST || 'localhost'
+const DB_PORT = +(process.env.DB_PORT || 3306)
+const DB_DATABASE = process.env.DB_DATABASE || ''
 
-
-type DrizzleConfig = Parameters<typeof defineConfig>[0]
-
-let mysqlConfig: DrizzleConfig = {
+let mysqlConfig: Config = {
     out: './drizzle',
     schema: './src/db/schema.ts',
     dialect: 'mysql',

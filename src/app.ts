@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -9,37 +9,51 @@ import helmet from 'helmet';
 import compression from 'compression';
 
 import { root_path } from './utils/core/getLocalPath';
-import { corsMiddleware } from './middleware/corsMiddleware';
+import { corsExceptionMiddleware, corsMiddleware } from './middleware/corsMiddleware';
 import { exceptionMiddleware } from './middleware/exceptionMiddleware';
-import APIRouter from './routes/api'
+import APIRouter from './routes/api';
 
 const app = express();
 
-
+/* --------------------------------------------
+ * 1️⃣  CORS NORMAL + PREFLIGHT
+ * -------------------------------------------- */
 app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
-app.use((req, _res, next) => {
-  console.log(`[${req.method}] ${req.originalUrl}`);
-  next();
-});
-
-// other middleware
-app.use(compression());
+/* --------------------------------------------
+ * 2️⃣  SECURITY & PERFORMANCE
+ * -------------------------------------------- */
 app.use(helmet());
+app.use(compression());
+
+/* --------------------------------------------
+ * 3️⃣  LOGGING
+ * -------------------------------------------- */
 app.use(logger('dev'));
+
+/* --------------------------------------------
+ * 4️⃣  BODY PARSERS
+ * -------------------------------------------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+/* --------------------------------------------
+ * 5️⃣  STATIC FILES
+ * -------------------------------------------- */
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 🖼️ View engine
+/* --------------------------------------------
+ * 6️⃣  VIEW ENGINE
+ * -------------------------------------------- */
 app.set('views', root_path('src/views'));
 app.set('view engine', 'ejs');
 
-
-// ✅ Basic endpoint untuk cek server hidup
-app.get('/', function (req, res) {
+/* --------------------------------------------
+ * 7️⃣  BASIC HEALTH CHECK
+ * -------------------------------------------- */
+app.get('/', (req, res) => {
   res.json({
     status: 'running',
     developer: 'Fahim',
@@ -48,19 +62,20 @@ app.get('/', function (req, res) {
   });
 });
 
-// 🔗 API Router
+/* --------------------------------------------
+ * 8️⃣  API ROUTES
+ * -------------------------------------------- */
 app.use('/api', APIRouter);
 
-// 🚨 5. Tangani CORS error secara eksplisit
-app.use(((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err.message === 'Not allowed by CORS') {
-    console.error('❌ CORS error:', req.headers.origin);
-    return res.status(403).json({ error: 'CORS policy does not allow this origin.' });
-  }
-  next(err);
-}) as express.ErrorRequestHandler);
+/* --------------------------------------------
+ * 9️⃣  CORS ERROR HANDLER
+ *    (HARUS DI BAWAH ROUTE)
+ * -------------------------------------------- */
+app.use(corsExceptionMiddleware);
 
-// ❗ 6. Global error handler (dari kamu)
+/* --------------------------------------------
+ * 🔟  GLOBAL ERROR HANDLER (PALING AKHIR)
+ * -------------------------------------------- */
 app.use(exceptionMiddleware);
 
 export default app;

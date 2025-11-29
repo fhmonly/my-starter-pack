@@ -5,9 +5,9 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
-const JWT_ACCESS_LIFETIME = process.env.JWT_ACCESS_LIFETIME;
+const JWT_ACCESS_LIFETIME = process.env.JWT_ACCESS_LIFETIME || '15m';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-const JWT_REFRESH_LIFETIME = process.env.JWT_REFRESH_LIFETIME;
+const JWT_REFRESH_LIFETIME = process.env.JWT_REFRESH_LIFETIME || '7d';
 
 export const generateAccessToken = (userId: number, role: typeof users.role.enumValues[number]) => {
     const maxAge = ms(JWT_ACCESS_LIFETIME);

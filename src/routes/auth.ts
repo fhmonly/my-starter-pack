@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.post('/register', ...registerController)
 router.post('/login', ...loginController)
+// router.post('/activate-account', ...accountActivationController)
 router.get('/logout', ...logoutController)
 router.get('/logout-all', ...logoutAllController)
 router.get('/refresh', ...refreshTokenController)

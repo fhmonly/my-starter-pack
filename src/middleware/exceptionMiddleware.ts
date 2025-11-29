@@ -5,20 +5,23 @@ import { APIResponse } from "../types/response/base";
 import { isErrorInstanceOfHttpError } from '../utils/libSupport/httpError';
 import createHttpError from 'http-errors';
 
+
 export const exceptionMiddleware: ErrorRequestHandler = (err, req, res, _next) => {
     res.status(err.status || 500);
     const httpErrorMsg = err.message
     const httpError = isErrorInstanceOfHttpError(err) ? err : createHttpError.InternalServerError(httpErrorMsg)
     const httpErrorBody = httpError.BadRequest ? err?.validationErrors || err?.cause : httpError
 
-    if (process.env.NODE_ENV === 'development') {
-        console.error(err);
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //     console.error(err);
+    // }
+
+    const isXMLHttpRequest = req.xhr
+    const isJsonRequest = req.headers["content-type"] === "application/json"
+    const isAcceptJson = req.headers.accept?.includes("application/json")
 
     if (
-        req.xhr ||
-        req.headers["content-type"] === "application/json" ||
-        req.headers.accept?.includes("application/json")
+        isXMLHttpRequest || isJsonRequest || isAcceptJson
     ) {
         const errorResponse: APIResponse<any[]> = {
             success: false,

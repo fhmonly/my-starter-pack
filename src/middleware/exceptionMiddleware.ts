@@ -1,12 +1,12 @@
-import dotenv from 'dotenv'
-dotenv.config()
-import { ErrorRequestHandler } from "express";
-import { APIResponse } from "../types/core/baseResponse";
-import { isErrorInstanceOfHttpError } from '../utils/libSupport/httpError';
+import dotenv from 'dotenv';
 import createHttpError from 'http-errors';
+import { TypedErrorReqHandler } from '../types/core/apiHandler';
+import { ErrorAPIResponse } from "../types/core/baseResponse";
+import { isErrorInstanceOfHttpError } from '../utils/libSupport/httpError';
+dotenv.config()
 
 
-export const exceptionMiddleware: ErrorRequestHandler = (err, req, res, _next) => {
+export const exceptionMiddleware: TypedErrorReqHandler = (err, req, res, _next) => {
     res.status(err.status || 500);
     const httpErrorMsg = err.message
     const httpError = isErrorInstanceOfHttpError(err) ? err : createHttpError.InternalServerError(httpErrorMsg)
@@ -23,7 +23,7 @@ export const exceptionMiddleware: ErrorRequestHandler = (err, req, res, _next) =
     if (
         isXMLHttpRequest || isJsonRequest || isAcceptJson
     ) {
-        const errorResponse: APIResponse<any[]> = {
+        const errorResponse: ErrorAPIResponse = {
             success: false,
             message: httpError.message,
             error: httpErrorBody

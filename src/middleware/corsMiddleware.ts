@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import cors from 'cors';
+import dotenv from 'dotenv';
 import { RESPONSE_MESSAGES } from '../const/response';
-import { ErrorRequestHandler } from 'express';
+import { TypedErrorReqHandler } from '../types/core/apiHandler';
+dotenv.config();
 
 const isDevelopment = () => process.env.NODE_ENV === 'development'
 
@@ -26,10 +26,13 @@ const corsOptions: cors.CorsOptions = {
 
 export const corsMiddleware = cors(corsOptions)
 
-export const corsExceptionMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+export const corsExceptionMiddleware: TypedErrorReqHandler = (err, req, res, next) => {
     if (err.message === RESPONSE_MESSAGES.CORS_NOT_ALLOWED) {
         console.error('❌ CORS error:', req.headers.origin);
-        return res.status(403).json({ error: RESPONSE_MESSAGES.CORS_NOT_ALLOWED });
+        return res.status(403).json({
+            success: false,
+            message: RESPONSE_MESSAGES.CORS_NOT_ALLOWED
+        });
     }
     next(err);
 }

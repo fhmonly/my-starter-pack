@@ -1,9 +1,9 @@
-import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import jwt from 'jsonwebtoken';
+import { TypedReqHandler } from "../types/core/apiHandler";
 import { AccessToken } from "../types/core/authToken";
 
-export const authMiddleware: RequestHandler = (req, res, next) => {
+export const authMiddleware: TypedReqHandler = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {

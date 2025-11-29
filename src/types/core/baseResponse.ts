@@ -1,3 +1,4 @@
+
 export type APIResponse<T = Record<string, any>> = {
     success: boolean;
     message?: string;
@@ -15,5 +16,9 @@ interface PaginatedResult<T> {
     };
 }
 
-export type PaginatedResponse<T = Record<string, any>> =
+export type PaginateAPIdResponse<T = Record<string, any>> =
     APIResponse<PaginatedResult<T>>
+
+export interface ErrorAPIResponse extends APIResponse {
+    success: false
+}

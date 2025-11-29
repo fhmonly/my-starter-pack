@@ -1,20 +1,19 @@
-import { RequestHandler } from 'express';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import { eq } from 'drizzle-orm';
+import { body, matchedData } from 'express-validator';
+import createHttpError from 'http-errors';
+import jwt from 'jsonwebtoken';
 import { db } from '../../db';
 import { refreshTokens, users } from '../../db/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt'
-import { body, matchedData } from 'express-validator';
-import expressValidatorMiddleware from '../../middleware/expressValidatorMiddleware';
-import createHttpError from 'http-errors';
-import { generateAccessToken, generateRefreshToken } from '../../utils/core/generateToken';
+import { TypedReqHandler } from '../../types/core/apiHandler';
 import { APIResponse } from '../../types/core/baseResponse';
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
+import { generateAccessToken } from '../../utils/core/generateToken';
 dotenv.config()
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
 
-const reqHandler: RequestHandler = async (req, res, next) => {
+const reqHandler: TypedReqHandler = async (req, res, next) => {
     try {
         const refreshToken = req.cookies?.refreshToken;
         if (!refreshToken) throw new createHttpError.Unauthorized('Refresh token missing');
@@ -47,7 +46,7 @@ const reqValidatorWithBody = [
     body('refreshToken').notEmpty().withMessage('refreshToken required'),
 ]
 
-const reqHandlerWithBody: RequestHandler = async (req, res, next) => {
+const reqHandlerWithBody: TypedReqHandler = async (req, res, next) => {
     try {
         const { refreshToken } = matchedData(req);
         if (!refreshToken) throw new createHttpError.Unauthorized('Refresh token missing');

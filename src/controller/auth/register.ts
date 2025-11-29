@@ -1,11 +1,11 @@
-import { RequestHandler } from 'express';
+import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
+import { body } from 'express-validator';
+import createHttpError from 'http-errors';
 import { db } from '../../db';
 import { users } from '../../db/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt'
-import { body } from 'express-validator';
 import expressValidatorMiddleware from '../../middleware/expressValidatorMiddleware';
-import createHttpError from 'http-errors';
+import { TypedReqHandler } from '../../types/core/apiHandler';
 import { APIResponse } from '../../types/core/baseResponse';
 
 const reqValidator = [
@@ -14,7 +14,7 @@ const reqValidator = [
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 ]
 
-const reqHandler: RequestHandler = async (req, res, next) => {
+const reqHandler: TypedReqHandler = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
 

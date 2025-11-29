@@ -1,7 +1,7 @@
-import { RequestHandler } from "express";
 import createHttpError from "http-errors";
+import { TypedReqHandler } from "../types/core/apiHandler";
 
-export const authAdminMiddleware: RequestHandler = (req, res, next) => {
+export const authAdminMiddleware: TypedReqHandler = (req, res, next) => {
     try {
         if (req.user?.role === 'admin') {
             return next()

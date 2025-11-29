@@ -1,15 +1,11 @@
-import { RequestHandler } from 'express';
-import { db } from '../../db';
-import { events, refreshTokens, users } from '../../db/schema';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt'
-import { body } from 'express-validator';
-import expressValidatorMiddleware from '../../middleware/expressValidatorMiddleware';
 import createHttpError from 'http-errors';
-import { generateAccessToken, generateRefreshToken } from '../../utils/core/generateToken';
+import { db } from '../../db';
+import { events } from '../../db/schema';
+import { TypedReqHandler } from '../../types/core/apiHandler';
 import { APIResponse } from '../../types/core/baseResponse';
 
-const reqHandler: RequestHandler = async (req, res, next) => {
+const reqHandler: TypedReqHandler = async (req, res, next) => {
     try {
         const allEvents = await db.select().from(events);
 
@@ -24,7 +20,7 @@ const reqHandler: RequestHandler = async (req, res, next) => {
     }
 };
 
-const reqHandlerEventDetail: RequestHandler = async (req, res, next) => {
+const reqHandlerEventDetail: TypedReqHandler = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
         const [event] = await db.select().from(events).where(eq(events.id, id));

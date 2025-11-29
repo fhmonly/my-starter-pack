@@ -1,8 +1,8 @@
-import { RequestHandler } from 'express';
 import { validationResult } from 'express-validator';
 import createHttpError from 'http-errors';
+import { TypedReqHandler } from '../types/core/apiHandler';
 
-const expressValidatorMiddleware: RequestHandler = (req, res, next) => {
+const expressValidatorMiddleware: TypedReqHandler = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const httpError = createHttpError.BadRequest()

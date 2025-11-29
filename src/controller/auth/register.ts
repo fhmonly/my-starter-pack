@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt'
 import { body } from 'express-validator';
 import expressValidatorMiddleware from '../../middleware/expressValidatorMiddleware';
 import createHttpError from 'http-errors';
-import { APIResponse } from '../../types/response/base';
+import { APIResponse } from '../../types/core/baseResponse';
 
 const reqValidator = [
     body('name').notEmpty().withMessage('Name is required'),

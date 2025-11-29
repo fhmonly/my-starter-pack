@@ -7,7 +7,7 @@ import { body, matchedData } from 'express-validator';
 import expressValidatorMiddleware from '../../middleware/expressValidatorMiddleware';
 import createHttpError from 'http-errors';
 import { generateAccessToken, generateRefreshToken } from '../../utils/core/generateToken';
-import { APIResponse } from '../../types/response/base';
+import { APIResponse } from '../../types/core/baseResponse';
 
 const reqValidator = [
     body('email').isEmail().withMessage('Valid email required'),

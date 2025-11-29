@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import { ErrorRequestHandler } from "express";
-import { APIResponse } from "../types/response/base";
+import { APIResponse } from "../types/core/baseResponse";
 import { isErrorInstanceOfHttpError } from '../utils/libSupport/httpError';
 import createHttpError from 'http-errors';
 

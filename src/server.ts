@@ -8,7 +8,7 @@ import app from './app';
 // @ts-ignore
 import createDebug from 'debug';
 import http from 'http';
-import { getLocalIP } from './utils/core/getLocalIP';
+import { getLocalIP } from './utils/network/getLocalIP';
 
 const debug = createDebug('order-services-node:server');
 

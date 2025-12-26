@@ -1,17 +1,17 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import helmet from 'helmet';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import helmet from 'helmet';
+import logger from 'morgan';
+import path from 'path';
 
-import { root_path } from './utils/core/getLocalPath';
 import { corsExceptionMiddleware, corsMiddleware } from './middleware/corsMiddleware';
 import { exceptionMiddleware } from './middleware/exceptionMiddleware';
-import APIRouter from './routes/api';
+import APIRouter from './routes/api.routes';
+import { root_path } from './utils/path/getLocalPath';
 
 const app = express();
 

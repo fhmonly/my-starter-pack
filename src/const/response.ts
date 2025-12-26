@@ -7,4 +7,5 @@ export const RESPONSE_MESSAGES = {
     RESOURCE_CREATED: 'Resource created successfully.',
     RESOURCE_UPDATED: 'Resource updated successfully.',
     RESOURCE_DELETED: 'Resource deleted successfully.',
+    VALIDATION_ERROR: 'Validation error.',
 }

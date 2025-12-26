@@ -1,17 +1,17 @@
 import { ErrorRequestHandler, RequestHandler } from "express";
-import { APIResponse, ErrorAPIResponse } from "./baseResponse";
+import { ErrorJSONResponse, StrictAPIJSONResponse } from "./baseResponse";
 
 
 interface ParamsDictionary {
     [key: string]: string;
 }
 
-export type TypedReqHandler = RequestHandler<
+export type TypedReqHandler<T = Record<string, any>> = RequestHandler<
     ParamsDictionary,
-    APIResponse
+    StrictAPIJSONResponse<T>
 >
 
 export type TypedErrorReqHandler = ErrorRequestHandler<
     ParamsDictionary,
-    ErrorAPIResponse
+    ErrorJSONResponse
 >

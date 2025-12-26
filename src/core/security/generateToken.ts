@@ -1,7 +1,8 @@
+import crypto from "crypto";
+import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import { users } from '../../db/schema';
 import ms from 'ms';
-import dotenv from 'dotenv'
+import { users } from '../../db/schema';
 dotenv.config()
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
@@ -22,3 +23,9 @@ export const generateRefreshToken = (userId: number) => {
     const token = jwt.sign({ userId, jti }, JWT_REFRESH_SECRET, { expiresIn: maxAge });
     return { token, jti, expiresAt, maxAge };
 };
+
+export function generateSecureToken() {
+    const token = crypto.randomBytes(32).toString("hex");
+    const hash = crypto.createHash("sha256").update(token).digest("hex");
+    return { token, hash };
+}

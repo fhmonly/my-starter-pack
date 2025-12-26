@@ -1,52 +1,45 @@
-// core/BaseController.ts
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import isHttpError, { HttpError } from 'http-errors';
-import z from "zod";
 import { SuccessJSONResponse } from "../../types/core/baseResponse";
-import { InferZodData, ZodSchemaShape, ZodValidator } from "../validation/ZodValidator";
+import { BaseValidator } from "../validation/validator";
+
+type CReq<Data = unknown> = Request & {
+    safeData?: Data;
+}
 
 interface CRes<Res = unknown> extends Response {
     customMessage?: string;
     data?: Res;
 }
 
-interface CReq<ZodData = unknown> extends Request {
-    zodData: ZodData;
-}
+type CreateHandlerCB<
+    JSONData extends Record<string, any>,
+    SafeData
+> = (
+    req: CReq<SafeData>,
+    res: CRes<JSONData>,
+    next: NextFunction
+) => JSONData | void | HttpError | Promise<JSONData | void | HttpError>
 
-type JSONData = Record<string, any>;
-
-type CreateHandlerCB<Res extends JSONData, ZodData> =
-    (req: CReq<ZodData>, res: CRes<Res>, next: NextFunction) =>
-        | Res
-        | void
-        | HttpError
-        | Promise<Res | void | HttpError>;
-
-interface TypedReqHandler extends RequestHandler {
-
-}
-
-export class BaseController<TSchema extends ZodSchemaShape | undefined = undefined> {
-    private validator?: ZodValidator<any>;
-
-    withValidation<T extends ZodSchemaShape>(schema: z.ZodObject<T>) {
-        const controller = new BaseController<T>();
-        controller.validator = new ZodValidator(schema);
-        return controller;
+export class BaseController<V extends BaseValidator> {
+    private validator?: V
+    constructor({
+        validator
+    }: {
+        validator?: V
+    } = {}) {
+        if (validator) this.validator = validator
     }
 
     createHandler<Res extends Record<string, any>>(
         fn: CreateHandlerCB<
             Res,
-            TSchema extends ZodSchemaShape ? InferZodData<TSchema> : unknown
+            V['safeData']
         >
     ): RequestHandler {
         return async (
-            req: Request,
-            res: Response,
-            next: NextFunction
-        ): Promise<void> => {
+            req, res, next
+        ) => {
             try {
                 if (this.validator) {
                     this.validator.validate()(req, res, next);

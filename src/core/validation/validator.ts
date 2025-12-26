@@ -1,12 +1,7 @@
-import { RequestHandler } from "express";
+import { RequestHandler } from "express"
 
-export type SchemaShape = {
-    body?: any;
-    query?: any;
-    params?: any;
-};
-
-
-export abstract class BaseValidator {
-    abstract validate(): RequestHandler;
+export abstract class BaseValidator<SafeData extends Record<string, any> = Record<string, any>> {
+    schema: unknown
+    safeData?: SafeData
+    abstract validate(): RequestHandler
 }

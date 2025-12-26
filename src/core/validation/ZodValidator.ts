@@ -1,20 +1,22 @@
-// validation/ZodValidator.ts
-import { RequestHandler } from "express";
-import z from "zod";
-import { RESPONSE_MESSAGES } from "../../const/response";
+import { RequestHandler } from "express"
+import z from "zod"
+import { RESPONSE_MESSAGES } from "../../const/response"
+import { BaseValidator } from "./validator"
 
-export type ZodSchemaShape = {
-    body?: z.ZodTypeAny;
-    query?: z.ZodTypeAny;
-    params?: z.ZodTypeAny;
-};
+type ZodSchema = {
+    body?: z.ZodObject<Record<string, z.ZodType>>,
+    params?: z.ZodObject<Record<string, z.ZodType>>,
+    query?: z.ZodObject<Record<string, z.ZodType>>
+}
 
-export type InferZodData<T extends ZodSchemaShape> = {
-    [K in keyof T]: z.infer<T[K]>;
-};
+export class ZodValidator<S extends ZodSchema> implements BaseValidator {
+    public schema: z.ZodObject<S>
+    public safeData?: z.infer<z.ZodObject<S>>
 
-export class ZodValidator<T extends ZodSchemaShape> {
-    constructor(private readonly schema: z.ZodObject<T>) { }
+    constructor(schema: S) {
+        this.schema = z.object(schema)
+        return this
+    }
 
     validate(): RequestHandler {
         return (req, res, next) => {
@@ -32,8 +34,7 @@ export class ZodValidator<T extends ZodSchemaShape> {
                 });
             }
 
-            req.zodData = parsed.data;
-            next();
+            req.safeData = parsed.data;
         };
     }
 }

@@ -8,6 +8,7 @@ import app from './app';
 // @ts-ignore
 import createDebug from 'debug';
 import http from 'http';
+import { env } from './core/config/env';
 import { getLocalIP } from './utils/network/getLocalIP';
 
 const debug = createDebug('order-services-node:server');
@@ -17,7 +18,7 @@ const debug = createDebug('order-services-node:server');
  */
 
 const host = getLocalIP()
-const port = normalizePort(process.env.PORT || '3000');
+const port = env.PORT;
 app.set('port', port);
 
 /**
@@ -38,25 +39,6 @@ console.log(`
 Server running at http://${host}:${port}    
 =======================================================================    
 `);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-function normalizePort(val: string): number | string | false {
-    const port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
-}
 
 /**
  * Event listener for HTTP server "error" event.

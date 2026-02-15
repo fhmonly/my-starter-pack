@@ -50,7 +50,8 @@ export class BaseController<V extends BaseValidator> {
                 if (res.headersSent) return;
 
                 if (data && isHttpError(data)) {
-                    return next(data);
+                    next(data);
+                    return
                 }
 
                 const successResponse: SuccessJSONResponse = { success: true };

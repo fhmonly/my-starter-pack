@@ -1,4 +1,3 @@
-import * as core from 'express-serve-static-core';
 import { AccessToken } from "../core/authToken";
 
 declare global {
@@ -14,7 +13,3 @@ declare global {
         }
     }
 }
-
-type CustomResponse = core.Response & {
-    json(data: core.Send): void;
-};

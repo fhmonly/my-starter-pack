@@ -22,6 +22,7 @@ app.options('*', corsMiddleware);
 /* --------------------------------------------
  * SECURITY & PERFORMANCE
  * -------------------------------------------- */
+app.disable('x-powered-by')
 app.use(helmet());
 app.use(compression());
 
